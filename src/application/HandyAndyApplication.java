@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 //import org.apache.pdfbox.pdmodel.PDDocument;
 
@@ -31,29 +34,31 @@ public class HandyAndyApplication extends Application{
     
     @Override
     public void start(Stage stage){
-        String query = "select * from users";
-        Statement stmt = null;
-        ResultSet rs = null;
         try{
             DatabaseConnection = DriverManager.getConnection(CONN_STR, APP_USER, APP_PSWD);
-            System.out.println("Connected");
-            stmt = DatabaseConnection.prepareStatement(query);
-            rs = stmt.executeQuery(query);
-            rs.next();
-            System.out.println(rs.getString("username"));
-            System.out.println(rs.getString("email"));
-            System.out.println(rs.getString("userType"));
-            System.out.println(rs.getString("password"));
-            DatabaseConnection.close();
-            stmt.close();
-            rs.close();
+            System.out.println("Connected to database.");
         }
         catch(SQLException ex){
             System.out.println(ex);
         }
-        //LoginMenu loginMenu = new LoginMenu();
-        //Scene scene = new Scene(loginMenu, 600, 400);
-        //stage.setScene(scene);
+        
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+            public void handle(WindowEvent e){
+                try{
+                    DatabaseConnection.close();
+                    System.out.println("Disconnected from database.");
+                }
+                catch(SQLException ex){
+                    System.out.println(ex);
+                }
+		Platform.exit();
+		System.exit(0);
+            }
+        });
+        
+        LoginMenu loginMenu = new LoginMenu();
+        Scene scene = new Scene(loginMenu, 600, 400);
+        stage.setScene(scene);
         stage.setTitle("HandyAndyApplication");
         stage.show();
     }

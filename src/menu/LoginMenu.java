@@ -5,7 +5,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+
+import handler.LoginHandler;
 
 /**
  *
@@ -23,6 +26,10 @@ public class LoginMenu extends Pane{
     private final PasswordField passwordField;
     private final HBox passwordBox;
     
+    private final Button loginButton;
+    
+    private final Label loginMessage;
+    
     public LoginMenu(){
         userLabel = new Label("Username: ");
         userTextField = new TextField("username");
@@ -32,8 +39,25 @@ public class LoginMenu extends Pane{
         passwordField = new PasswordField();
         passwordBox = new HBox(passwordLabel, passwordField);
         
-        loginBox = new VBox(userBox, passwordBox);
+        loginButton = new Button("Login");
+        loginButton.setOnAction(new LoginHandler());
+        
+        loginMessage = new Label("");
+        
+        loginBox = new VBox(userBox, passwordBox, loginButton, loginMessage);
         
         this.getChildren().add(loginBox);
+    }
+    
+    public String getUsername(){
+        return this.userTextField.getText();
+    }
+    
+    public String getPassword(){
+        return Integer.toString(this.passwordField.getText().hashCode());
+    }
+    
+    public void setLoginMessage(String message){
+        this.loginMessage.setText(message);
     }
 }

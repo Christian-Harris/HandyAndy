@@ -12,13 +12,17 @@ public class User {
     
     public User(String username, String password, UserType userType){
         this.username = username;
-        this.password = password;
+        this.password = User.hashPassword(password);
         this.userType = userType;
     }
     
     public User(String username, String password, String email, UserType userType){
         this(username, password, userType);
         this.email = email;
+    }
+    
+    private static String hashPassword(String password){ //Requires more robust implementation.
+        return Integer.toString(password.hashCode());
     }
     
     public void setUsername(String username){} //Requires implementation.
